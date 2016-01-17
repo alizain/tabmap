@@ -200,7 +200,6 @@ var Home = _react2.default.createClass({
     var _this4 = this;
 
     e.preventDefault();
-    this.setState({ waiting: true });
     _tabs2.default.capture().then(function (data) {
       _storage2.default.set((0, _utils.randomString)(), {
         name: _this4.state.input,
@@ -208,7 +207,6 @@ var Home = _react2.default.createClass({
         saved: new Date().toISOString()
       });
       _this4.state.input = '';
-      _this4.setState({ waiting: false });
     });
   },
   handleInput: function handleInput(e) {

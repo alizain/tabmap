@@ -55,7 +55,6 @@ var Home = React.createClass({
 
   handleSubmit(e) {
     e.preventDefault();
-    this.setState({ waiting: true });
     tabs.capture().then((data) => {
       storage.set(randomString(), {
         name: this.state.input,
@@ -63,7 +62,6 @@ var Home = React.createClass({
         saved: new Date().toISOString()
       });
       this.state.input = '';
-      this.setState({ waiting: false });
     });
   },
 
