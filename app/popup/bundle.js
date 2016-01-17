@@ -154,6 +154,7 @@ var Home = _react2.default.createClass({
   displayName: 'Home',
   getInitialState: function getInitialState() {
     return {
+      input: '',
       windows: {}
     };
   },
@@ -190,6 +191,24 @@ var Home = _react2.default.createClass({
   removeWindow: function removeWindow(key) {
     _storage2.default.remove(key);
   },
+  handleSubmit: function handleSubmit(e) {
+    var _this3 = this;
+
+    e.preventDefault();
+    _tabs2.default.capture().then(function (data) {
+      _storage2.default.set((0, _utils.randomString)(), {
+        name: _this3.state.input,
+        tabs: data,
+        saved: Date.now()
+      });
+      _this3.state.input = '';
+    });
+  },
+  handleInput: function handleInput(e) {
+    this.setState({
+      input: e.target.value
+    });
+  },
   renderSpace: function renderSpace(key, window) {
     return _react2.default.createElement(
       'li',
@@ -197,42 +216,88 @@ var Home = _react2.default.createClass({
       _react2.default.createElement(
         'div',
         null,
-        window.name === undefined ? key : name
+        !window.name ? key : window.name
       ),
       _react2.default.createElement(
-        'a',
-        { onClick: this.openWindow.bind(this, key) },
-        'Open'
-      ),
-      _react2.default.createElement(
-        'a',
-        { onClick: this.removeWindow.bind(this, key) },
-        'Remove'
+        'div',
+        { className: 'pure-g' },
+        _react2.default.createElement(
+          'span',
+          { className: 'pure-u-1-2' },
+          window.saved
+        ),
+        _react2.default.createElement(
+          'button',
+          { className: 'pure-u-3-8 pure-button button-open', onClick: this.openWindow.bind(this, key) },
+          _react2.default.createElement('i', { className: 'fa fa-lg fa-external-link' }),
+          'Open'
+        ),
+        _react2.default.createElement(
+          'button',
+          { className: 'pure-u-1-8 pure-button button-remove', onClick: this.removeWindow.bind(this, key) },
+          _react2.default.createElement('i', { className: 'fa fa-lg fa-trash' })
+        )
       )
     );
   },
   render: function render() {
-    var _this3 = this;
+    var _this4 = this;
 
     return _react2.default.createElement(
       'div',
       null,
       _react2.default.createElement(
-        'h2',
-        null,
-        'TabMap'
+        'section',
+        { className: 'header' },
+        _react2.default.createElement(
+          'h1',
+          null,
+          'TabMap'
+        )
       ),
       _react2.default.createElement(
-        'button',
-        { onClick: this.captureWindow },
-        'Save Current Window'
+        'section',
+        null,
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Save all tabs in the current window'
+        ),
+        _react2.default.createElement(
+          'form',
+          { onSubmit: this.handleSubmit, className: 'pure-form' },
+          _react2.default.createElement(
+            'fieldset',
+            null,
+            _react2.default.createElement('input', { type: 'text',
+              value: this.state.input,
+              onChange: this.handleInput,
+              placeholder: 'Name',
+              className: 'pure-input-2-3'
+            }),
+            _react2.default.createElement(
+              'button',
+              { type: 'submit', className: 'pure-button pure-button-primary' },
+              'Save'
+            )
+          )
+        )
       ),
       _react2.default.createElement(
-        'ol',
+        'section',
         null,
-        Object.keys(this.state.windows).map(function (key) {
-          return _this3.renderSpace(key, _this3.state.windows[key]);
-        })
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Saved windows'
+        ),
+        _react2.default.createElement(
+          'ul',
+          { className: 'window-list' },
+          Object.keys(this.state.windows).map(function (key) {
+            return _this4.renderSpace(key, _this4.state.windows[key]);
+          })
+        )
       )
     );
   }
