@@ -26,5 +26,9 @@
     "no-trailing-spaces": [1, { "skipBlankLines": true }],
     "no-unreachable": 1,
     "no-alert": 0,
+    "react/prefer-es6-class": 0
+  },
+  "globals": {
+    "chrome": true
   }
 }
