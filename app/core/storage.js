@@ -24,6 +24,18 @@ export function get(key) {
   });
 }
 
+export function getAll() {
+  return new Promise((resolve, reject) => {
+    chrome.storage[STORAGE_TYPE].get(null, (data) => {
+      if (chrome.runtime.lastError === undefined) {
+        resolve(data);
+      } else {
+        reject(chrome.runtime.lastError);
+      }
+    });
+  });
+}
+
 export function remove(key) {
   return new Promise((resolve, reject) => {
     chrome.storage[STORAGE_TYPE].remove(key, () => {
@@ -47,6 +59,7 @@ export function onChange(func) {
 export default {
   set,
   get,
+  getAll,
   remove,
   onChange
 };

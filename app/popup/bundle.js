@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.set = set;
 exports.get = get;
+exports.getAll = getAll;
 exports.remove = remove;
 exports.onChange = onChange;
 
@@ -28,6 +29,18 @@ function set(key, value) {
 function get(key) {
   return new Promise(function (resolve, reject) {
     chrome.storage[STORAGE_TYPE].get(key, function (data) {
+      if (chrome.runtime.lastError === undefined) {
+        resolve(data);
+      } else {
+        reject(chrome.runtime.lastError);
+      }
+    });
+  });
+}
+
+function getAll() {
+  return new Promise(function (resolve, reject) {
+    chrome.storage[STORAGE_TYPE].get(null, function (data) {
       if (chrome.runtime.lastError === undefined) {
         resolve(data);
       } else {
@@ -60,18 +73,20 @@ function onChange(func) {
 exports.default = {
   set: set,
   get: get,
+  getAll: getAll,
   remove: remove,
   onChange: onChange
 };
 
 },{}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.capture = capture;
 exports.open = open;
+exports.getAll = getAll;
 function capture() {
   return new Promise(function (resolve, reject) {
     chrome.tabs.query({
@@ -96,9 +111,21 @@ function open(urls) {
   });
 }
 
+function getAll() {
+  return new Promise(function (resolve, reject) {
+    chrome.windows.getAll({
+      populate: true,
+      windowTypes: ['normal']
+    }, function (data) {
+      resolve(data);
+    });
+  });
+}
+
 exports.default = {
   open: open,
-  capture: capture
+  capture: capture,
+  getAll: getAll
 };
 
 },{}],3:[function(require,module,exports){
@@ -108,6 +135,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.randomString = randomString;
+exports.prettifyJSON = prettifyJSON;
 function randomString(length, charset) {
   length = length || 12;
   charset = charset || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -116,6 +144,10 @@ function randomString(length, charset) {
     rStr.push(charset[Math.floor(Math.random() * charset.length)]);
   }
   return rStr.join('');
+}
+
+function prettifyJSON(obj) {
+  return JSON.stringify(obj, null, 4);
 }
 
 },{}],4:[function(require,module,exports){
@@ -162,7 +194,8 @@ var Home = _react2.default.createClass({
     return {
       input: '',
       windows: {},
-      waiting: false
+      waiting: false,
+      exportedData: undefined
     };
   },
   componentDidMount: function componentDidMount() {
@@ -176,7 +209,7 @@ var Home = _react2.default.createClass({
   getFromStorage: function getFromStorage() {
     var _this2 = this;
 
-    _storage2.default.get(null).then(function (data) {
+    _storage2.default.getAll().then(function (data) {
       _this2.setState({
         windows: data
       });
@@ -214,8 +247,31 @@ var Home = _react2.default.createClass({
       input: e.target.value
     });
   },
-  renderWindows: function renderWindows() {
+  handleExportOpen: function handleExportOpen() {
     var _this5 = this;
+
+    _tabs2.default.getAll().then(function (data) {
+      _this5.setState({
+        exportedData: (0, _utils.prettifyJSON)(data)
+      });
+    });
+  },
+  handleExportStored: function handleExportStored() {
+    var _this6 = this;
+
+    _storage2.default.getAll().then(function (data) {
+      _this6.setState({
+        exportedData: (0, _utils.prettifyJSON)(data)
+      });
+    });
+  },
+  handleExportClear: function handleExportClear() {
+    this.setState({
+      exportedData: undefined
+    });
+  },
+  renderWindows: function renderWindows() {
+    var _this7 = this;
 
     if (Object.keys(this.state.windows).length > 0) {
       return _react2.default.createElement(
@@ -230,7 +286,7 @@ var Home = _react2.default.createClass({
           'ul',
           { className: 'windows-list' },
           Object.keys(this.state.windows).map(function (key) {
-            return _this5.renderItem(key, _this5.state.windows[key]);
+            return _this7.renderItem(key, _this7.state.windows[key]);
           })
         )
       );
@@ -281,6 +337,28 @@ var Home = _react2.default.createClass({
       )
     );
   },
+  renderExportedData: function renderExportedData() {
+    if (this.state.exportedData !== undefined) {
+      return _react2.default.createElement(
+        'div',
+        { className: 'export-data' },
+        _react2.default.createElement(
+          'button',
+          { className: 'pure-button', onClick: this.handleExportClear },
+          'Clear'
+        ),
+        _react2.default.createElement(
+          'pre',
+          null,
+          _react2.default.createElement(
+            'code',
+            null,
+            this.state.exportedData
+          )
+        )
+      );
+    }
+  },
   render: function render() {
     return _react2.default.createElement(
       'div',
@@ -318,7 +396,43 @@ var Home = _react2.default.createClass({
           )
         )
       ),
-      this.renderWindows()
+      this.renderWindows(),
+      _react2.default.createElement(
+        'section',
+        null,
+        _react2.default.createElement(
+          'h2',
+          null,
+          'Export'
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'window-row export-row' },
+          _react2.default.createElement(
+            'button',
+            { className: 'pure-button', onClick: this.handleExportStored },
+            'All ',
+            _react2.default.createElement(
+              'strong',
+              null,
+              'Stored'
+            ),
+            ' Windows'
+          ),
+          _react2.default.createElement(
+            'button',
+            { className: 'pure-button', onClick: this.handleExportOpen },
+            'All ',
+            _react2.default.createElement(
+              'strong',
+              null,
+              'Open'
+            ),
+            ' Windows'
+          )
+        ),
+        this.renderExportedData()
+      )
     );
   }
 });

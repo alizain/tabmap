@@ -10,7 +10,7 @@ import moment from 'moment-timezone';
 
 import tabs from '../core/tabs';
 import storage from '../core/storage';
-import { randomString } from '../core/utils';
+import { randomString, prettifyJSON } from '../core/utils';
 
 const TZ = moment.tz.guess();
 
@@ -20,7 +20,8 @@ var Home = React.createClass({
     return {
       input: '',
       windows: {},
-      waiting: false
+      waiting: false,
+      exportedData: undefined
     };
   },
 
@@ -32,7 +33,7 @@ var Home = React.createClass({
   },
 
   getFromStorage() {
-    storage.get(null).then((data) => {
+    storage.getAll().then((data) => {
       this.setState({
         windows: data
       });
@@ -68,6 +69,28 @@ var Home = React.createClass({
   handleInput(e) {
     this.setState({
       input: e.target.value
+    });
+  },
+
+  handleExportOpen() {
+    tabs.getAll().then((data) => {
+      this.setState({
+        exportedData: prettifyJSON(data)
+      });
+    });
+  },
+
+  handleExportStored() {
+    storage.getAll().then((data) => {
+      this.setState({
+        exportedData: prettifyJSON(data)
+      });
+    });
+  },
+
+  handleExportClear() {
+    this.setState({
+      exportedData: undefined
     });
   },
 
@@ -111,6 +134,21 @@ var Home = React.createClass({
     );
   },
 
+  renderExportedData() {
+    if (this.state.exportedData !== undefined) {
+      return (
+        <div className="export-data">
+          <button className="pure-button" onClick={this.handleExportClear}>Clear</button>
+          <pre>
+            <code>
+              { this.state.exportedData }
+            </code>
+          </pre>
+        </div>
+      );
+    }
+  },
+
   render() {
     return (
       <div>
@@ -130,6 +168,14 @@ var Home = React.createClass({
           </form>
         </section>
         { this.renderWindows() }
+        <section>
+          <h2>Export</h2>
+          <div className="window-row export-row">
+            <button className="pure-button" onClick={this.handleExportStored}>All <strong>Stored</strong> Windows</button>
+            <button className="pure-button" onClick={this.handleExportOpen}>All <strong>Open</strong> Windows</button>
+          </div>
+          { this.renderExportedData() }
+        </section>
       </div>
     );
   }

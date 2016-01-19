@@ -22,7 +22,19 @@ export function open(urls) {
   });
 }
 
+export function getAll() {
+  return new Promise((resolve, reject) => {
+    chrome.windows.getAll({
+      populate: true,
+      windowTypes: ['normal']
+    }, (data) => {
+      resolve(data);
+    });
+  });
+}
+
 export default {
   open,
-  capture
+  capture,
+  getAll
 };

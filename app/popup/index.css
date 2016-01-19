@@ -1,5 +1,5 @@
 body {
-  min-width: 320px;
+  width: 360px;
 }
 
 #app {
@@ -49,6 +49,7 @@ form.pure-form .form-item {
 
 form.pure-form .form-item:first-child {
   margin-right: 0.5em;
+  min-width: 232px;
 }
 
 .windows-list {
@@ -94,6 +95,7 @@ form.pure-form .form-item:first-child {
   line-height: 1.6;
   color: #000;
   margin-bottom: 6px;
+  font-style: normal;
 }
 
 .details-date {
@@ -123,4 +125,26 @@ form.pure-form .form-item:first-child {
 
 .button-remove {
   background: rgb(202, 60, 60);
+}
+
+.export-row {
+  align-content: stretch;
+  padding: 12px;
+}
+
+.export-row > * {
+  margin-left: 12px;
+  flex-grow: 1;
+}
+
+.export-row > *:first-child {
+  margin-left: 0px;
+}
+
+.export-data {
+  padding: 0px 12px 12px;
+}
+
+.export-data > button {
+  width: 100%;
 }
