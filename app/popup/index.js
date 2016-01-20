@@ -153,6 +153,7 @@ var Home = React.createClass({
     return (
       <div>
         <section className="header">
+          <img src="../icon-outline.png"/>
           <h1>TabMap</h1>
         </section>
         <section>

@@ -19,13 +19,32 @@ section:last-of-type {
 }
 
 section.header {
+  text-align: left;
+  margin-top: 0px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-style: normal;
+  margin: 0px 0px;
+  padding: 10px 12px;
+  background: hsl(176, 76%, 48%);
+  color: #fff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
 
+section > img {
+  height: 20px;
 }
 
 section > h1 {
-  text-align: center;
-  margin-top: 0px;
-  margin-bottom: 16px;
+  margin: 0px;
+  padding: 0px;
+  font-size: 14px;
+  margin-left: 8px;
 }
 
 section > h2 {
@@ -34,7 +53,7 @@ section > h2 {
   font-weight: 500;
   font-style: normal;
   margin: 0px 0px;
-  padding: 6px 12px;
+  padding: 9px 12px;
   background: #F0F0F0;
   color: #999;
 }

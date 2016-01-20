@@ -366,6 +366,7 @@ var Home = _react2.default.createClass({
       _react2.default.createElement(
         'section',
         { className: 'header' },
+        _react2.default.createElement('img', { src: '../icon-outline.png' }),
         _react2.default.createElement(
           'h1',
           null,
