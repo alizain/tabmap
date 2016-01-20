@@ -71,6 +71,19 @@ form.pure-form .form-item:first-child {
   min-width: 232px;
 }
 
+form.pure-form .pure-button-primary {
+  background-color: hsl(208, 100%, 60%)
+}
+
+.pure-button-hover, .pure-button:hover, .pure-button:focus {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(transparent),color-stop(80%,rgba(0,0,0,.02)),to(rgba(0,0,0,.08)));
+    background-image: -webkit-linear-gradient(transparent,rgba(0,0,0,.02) 80%,rgba(0,0,0,.08));
+    background-image: -moz-linear-gradient(top,rgba(0,0,0,.02) 0,rgba(0,0,0,.08));
+    background-image: -o-linear-gradient(transparent,rgba(0,0,0,.02) 80%,rgba(0,0,0,.08));
+    background-image: linear-gradient(transparent,rgba(0,0,0,.02) 80%,rgba(0,0,0,.08));
+}
+
 .windows-list {
   list-style: none;
   margin: 0px;
@@ -138,12 +151,12 @@ form.pure-form .form-item:first-child {
 }
 
 .button-open {
-  background: rgb(28, 184, 65);
+  background: hsl(144, 92%, 60%);
   margin-right: 4px;
 }
 
 .button-remove {
-  background: rgb(202, 60, 60);
+  background: hsl(340, 80%, 70%);
 }
 
 .export-row {
