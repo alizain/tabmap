@@ -188,6 +188,25 @@ _bluebird2.default.config({
 
 var TZ = _momentTimezone2.default.tz.guess();
 
+var sorters = {
+  date: function date(a, b) {
+    if (a.saved > b.saved) {
+      return -1;
+    } else if (a.saved > b.saved) {
+      return 1;
+    }
+    return 0;
+  },
+  title: function title(a, b) {
+    if (a.name < b.name) {
+      return -1;
+    } else if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  }
+};
+
 var Home = _react2.default.createClass({
   displayName: 'Home',
   getInitialState: function getInitialState() {
@@ -195,7 +214,8 @@ var Home = _react2.default.createClass({
       input: '',
       windows: {},
       waiting: false,
-      exportedData: undefined
+      exportedData: undefined,
+      sort: "date"
     };
   },
   componentDidMount: function componentDidMount() {
@@ -270,9 +290,16 @@ var Home = _react2.default.createClass({
       exportedData: undefined
     });
   },
+  handleSortChange: function handleSortChange(value) {
+    this.setState({
+      sort: value
+    });
+  },
   renderWindows: function renderWindows() {
     var _this7 = this;
 
+    console.log(sorters[this.state.sort]);
+    console.log(this.state.sort);
     if (Object.keys(this.state.windows).length > 0) {
       return _react2.default.createElement(
         'section',
@@ -283,9 +310,35 @@ var Home = _react2.default.createClass({
           'Stored Windows'
         ),
         _react2.default.createElement(
+          'div',
+          { className: 'window-row export-row' },
+          _react2.default.createElement(
+            'button',
+            { className: 'pure-button', onClick: this.handleSortChange.bind(this, "date") },
+            'Sort by ',
+            _react2.default.createElement(
+              'strong',
+              null,
+              'Date'
+            )
+          ),
+          _react2.default.createElement(
+            'button',
+            { className: 'pure-button', onClick: this.handleSortChange.bind(this, "title") },
+            'Sort by ',
+            _react2.default.createElement(
+              'strong',
+              null,
+              'Title'
+            )
+          )
+        ),
+        _react2.default.createElement(
           'ul',
           { className: 'windows-list' },
-          Object.keys(this.state.windows).map(function (key) {
+          Object.keys(this.state.windows).sort(function (a, b) {
+            return sorters[_this7.state.sort](_this7.state.windows[a], _this7.state.windows[b]);
+          }).map(function (key) {
             return _this7.renderItem(key, _this7.state.windows[key]);
           })
         )

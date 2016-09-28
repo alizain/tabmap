@@ -14,6 +14,25 @@ import { randomString, prettifyJSON } from '../core/utils';
 
 const TZ = moment.tz.guess();
 
+const sorters = {
+  date(a, b) {
+    if (a.saved > b.saved) {
+      return -1
+    } else if (a.saved > b.saved) {
+      return 1
+    }
+    return 0
+  },
+  title(a, b) {
+    if (a.name < b.name) {
+      return -1
+    } else if (a.name > b.name) {
+      return 1
+    }
+    return 0
+  }
+}
+
 var Home = React.createClass({
 
   getInitialState() {
@@ -21,7 +40,8 @@ var Home = React.createClass({
       input: '',
       windows: {},
       waiting: false,
-      exportedData: undefined
+      exportedData: undefined,
+      sort: "date"
     };
   },
 
@@ -94,16 +114,30 @@ var Home = React.createClass({
     });
   },
 
+  handleSortChange(value) {
+    this.setState({
+      sort: value
+    })
+  },
+
   renderWindows() {
+    console.log(sorters[this.state.sort])
+    console.log(this.state.sort)
     if (Object.keys(this.state.windows).length > 0) {
       return (
         <section>
           <h2>Stored Windows</h2>
+          <div className="window-row export-row">
+            <button className="pure-button" onClick={this.handleSortChange.bind(this, "date")}>Sort by <strong>Date</strong></button>
+            <button className="pure-button" onClick={this.handleSortChange.bind(this, "title")}>Sort by <strong>Title</strong></button>
+          </div>
           <ul className="windows-list">
             {
-              Object.keys(this.state.windows).map((key) => {
-                return this.renderItem(key, this.state.windows[key]);
-              })
+              Object.keys(this.state.windows)
+                .sort((a, b) => sorters[this.state.sort](this.state.windows[a], this.state.windows[b]))
+                .map((key) => {
+                  return this.renderItem(key, this.state.windows[key]);
+                })
             }
           </ul>
         </section>
